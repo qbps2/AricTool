@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RandomTool
+namespace SearchStringProject
 {
     static class Program
     {
@@ -16,7 +16,7 @@ namespace RandomTool
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new RandomTool());
+            Application.Run(new SearchStringProject());
         }
     }
 }
