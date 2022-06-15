@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">net6.0;net45;net40;net35;net20;netstandard1.0;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
+    <PackageId>Aric.Util.AppLogger</PackageId>
+    <Company>Aric</Company>
+    <Authors>Aric</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>Library to log text to console</Description>
+    <Product>AricLogger</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/qbps2/AricTool</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/qbps2/AricTool</RepositoryUrl>
+    <PackageTags>Aric; Logs; Text</PackageTags>
+    <Version>1.0.3</Version>
+    <AssemblyVersion>1.0.1.1</AssemblyVersion>
+    <FileVersion>1.0.1.1</FileVersion>
+    <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+
+</Project>
