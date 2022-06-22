@@ -3,17 +3,21 @@ using AricPackage;
 
 Console.WriteLine("Hello, World!");
 
-int doTimeFn(string name, int id)
+int doTimeFn1(string name, int id)
 {
-    Console.WriteLine("{0} {1} time out", name, id);
+    Console.WriteLine("{0} {1} time out doTimeFn", name, id);
     return 0;
 }
 
-AlarmClock alarm1 = new AlarmClock(doTimeFn, "Alarm AAA", 1);
-AlarmClock alarm2 = new AlarmClock(doTimeFn, "Alarm BBB", 2);
-alarm1.startAlarmClock(6);
-alarm2.startAlarmClock(5);
+void doTimeFn2(string name, int id)
+{
+    Console.WriteLine("{0} {1} time out doTimeFn2", name, id);
+    //return "";
+}
 
-//Thread.Sleep(30000);
+AlarmClock alarm1 = new AlarmClock(doTimeFn1, "Alarm AAA", 1, true);
+AlarmClock alarm2 = new AlarmClock(doTimeFn2, "Alarm BBB", 2, true);
+alarm1.startAlarmClock(5);
+alarm2.startAlarmClock(10);
 
 Console.ReadLine();

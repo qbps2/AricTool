@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace AricPackage
 {
@@ -8,17 +9,21 @@ namespace AricPackage
         private int alarmID = 0;
         private int dseconds = 0;
         private string alarmName = "null";
+        bool isShowLog = false;
 
         System.Timers.Timer timer;
-        // private Func<string, int, int> alarmTimeoutFun = (alarmName, alarmID) => 0;
-        private Func<string, int, int> alarmTimeoutFun; // = (alarmName, alarmID) => 0;
+        private Func<string, int, int> timeoutFunc; // = (alarmName, alarmID) => 0;
+        private Action<string, int> timeoutAction; // = (alarmName, alarmID) => 0;
 
-        public AlarmClock(Func<string, int, int> alarmTimeoutFun, string alarmName, int alarmID)
+        public AlarmClock(Func<string, int, int> timeoutFunc, string alarmName, int alarmID, bool isShowLog = true)
         {
-            this.alarmTimeoutFun = alarmTimeoutFun;
+            this.timeoutFunc = timeoutFunc;
             this.alarmName = alarmName;
             this.alarmID = alarmID;
-            Console.WriteLine("Alarm [{0}] register...", this.alarmName);
+            this.isShowLog = isShowLog;
+            
+            if(this.isShowLog)
+                Console.WriteLine("Alarm [{0}] timeoutFunc register...", this.alarmName);
 
             //set timer property
             timer = new System.Timers.Timer();
@@ -26,9 +31,30 @@ namespace AricPackage
             timer.Elapsed += Timer_Elapsed;
         }
 
+        public AlarmClock(Action<string, int> timeoutAction, string alarmName, int alarmID, bool isShowLog = true)
+        {
+            this.timeoutAction = timeoutAction;
+            this.alarmName = alarmName;
+            this.alarmID = alarmID;
+            this.isShowLog = isShowLog;
+
+            if (this.isShowLog)
+                Console.WriteLine("Alarm [{0}] timeoutAction register...", this.alarmName);
+
+            //set timer property
+            timer = new System.Timers.Timer();
+            timer.Interval = 900;
+            timer.Elapsed += Timer_Elapsed;
+        }
+
+        public void setShowLog(bool IsShow)
+        {
+            isShowLog = IsShow;
+        }
+
         public bool stopAlarm()
         {
-            if (this.alarmTimeoutFun == null)
+            if (this.timeoutFunc == null && this.timeoutAction == null)
             {
                 return false;
             }
@@ -39,7 +65,8 @@ namespace AricPackage
             }
             else
             {
-                Console.WriteLine("AlarmClock [{0}] stop", this.alarmName);
+                if (isShowLog)
+                    Console.WriteLine("AlarmClock [{0}] stop", this.alarmName);
                 timer.Stop();
                 return true;
             }
@@ -47,15 +74,17 @@ namespace AricPackage
 
         public bool startAlarmClock(int seconds)
         {
-            if (this.alarmTimeoutFun == null)
+            if (this.timeoutFunc == null && timeoutAction == null)
             {
-                Console.WriteLine("[Error] it does not register this alarm");
+                if (isShowLog)
+                    Console.WriteLine("[Error] it does not register this alarm");
                 return false;
             }
 
             startTime = DateTime.Now;
             this.dseconds = seconds;
-            Console.WriteLine("AlarmClock {0} [{1}] duration: {2} seconds start ", DateTime.Now, this.alarmName, this.dseconds);
+            if (isShowLog)
+                Console.WriteLine("AlarmClock {0} [{1}] duration: {2} seconds start ", DateTime.Now, this.alarmName, this.dseconds);
             timer.Start();
             return true;
         }
@@ -65,20 +94,34 @@ namespace AricPackage
             var timeDiff = DateTime.Now.Subtract(startTime).TotalSeconds;
             if (timeDiff > dseconds)
             {
-                Console.WriteLine("AlarmClock {0} [{1}] trigger", DateTime.Now, this.alarmName);
+                if (isShowLog)
+                    Console.WriteLine("AlarmClock {0} [{1}] trigger", DateTime.Now, this.alarmName);
                 timer.Stop();
 
-                if (alarmTimeoutFun != null)
+                if (timeoutFunc != null)
                 {
-                    Console.WriteLine("AlarmClock [{0}] Callback", this.alarmName);
-                    alarmTimeoutFun.Invoke(this.alarmName, this.alarmID);
+                    if (isShowLog)
+                        Console.WriteLine("AlarmClock [{0}] Callback", this.alarmName);
+                    timeoutFunc.Invoke(this.alarmName, this.alarmID);
+                }
+
+                if (timeoutAction != null)
+                {
+                    if (isShowLog)
+                        Console.WriteLine("AlarmClock [{0}] Callback", this.alarmName);
+                    timeoutAction.Invoke(this.alarmName, this.alarmID);
                 }
             }
         }
 
         ~AlarmClock()
         {
-            Console.WriteLine("AlarmClock {0} release...", this.alarmName);
+            if (isShowLog)
+                Console.WriteLine("AlarmClock {0} release...", this.alarmName);
+
+            timeoutFunc = null;
+            timeoutAction = null;
+
             timer.Elapsed -= Timer_Elapsed;
         }
 
