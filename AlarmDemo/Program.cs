@@ -20,4 +20,6 @@ AlarmClock alarm2 = new AlarmClock(doTimeFn2, "Alarm BBB", 2, true);
 alarm1.startAlarmClock(5);
 alarm2.startAlarmClock(10);
 
+// aric main test
+
 Console.ReadLine();
